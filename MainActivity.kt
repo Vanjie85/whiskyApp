@@ -1,6 +1,5 @@
 package com.jogogojco.inlupp2
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         private fun printWhisky(updateText: TextView) {
         totalSum = pricePerCl * nrOfCl
         if (selectedWhisky != "")
-            updateText.text = getString(R.string.your_fav_whisky) +selectedWhisky +getString(R.string.cl_price) + selectedPrice+" kr/cl"
+            updateText.text = getString(R.string.your_choice_is) +selectedWhisky +getString(R.string.cl_price) + selectedPrice+" kr/cl"
         else
             updateText.text = getString(R.string.choose_whisky)
 
@@ -98,12 +97,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Choose whisky first!", Toast.LENGTH_SHORT).show()
                     resetSpinner()}
                 else
-                    updateText.text = "Du har valt " + selectedCl + " totalsumman är "+totalSum
+                    updateText.text = getString(R.string.your_choice_is) + selectedCl + "\n" + getString(R.string.tot_sum) + totalSum + " kr"
             }
         }
         else
             if (updateText != null) {
-                updateText.text = "Välj cl"
+                updateText.text = ""
             }
     }
 
