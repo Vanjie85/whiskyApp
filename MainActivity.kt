@@ -10,6 +10,7 @@ class MainActivity : AppCompatActivity() {
     var selectedWhisky = ""
     var selectedPrice = ""
     var selectedCl = ""
+    var selectedArtist = ""
     var pricePerCl = 0
     var nrOfCl = 0
     var totalSum = 0
@@ -22,28 +23,36 @@ class MainActivity : AppCompatActivity() {
         val whiskiesArray = resources.getStringArray(R.array.whiskies)
         val whiskyPriceArray = resources.getStringArray(R.array.whiskies_cl_price)
         val amountOfClArray = resources.getStringArray(R.array.cl_option)
+        val artistsArray = resources.getStringArray(R.array.artists)
         //create variable to hold the textViews
         var whiskyAndPriceText = findViewById<TextView>(R.id.text_choose_whisky)
         var clChoiceText = findViewById<TextView>(R.id.text_cl)
+        var artistText = findViewById<TextView>(R.id.text_artist)
         //To find the spinner from the layout file, an instance of the Spinner object is needed
         val spinnerWhisky: Spinner = findViewById(R.id.spinner_whisky)
         val spinnerCl: Spinner = findViewById(R.id.spinner_cl)
+        val spinnerArtist: Spinner = findViewById(R.id.spinner_artist)
         //To connect the whisky spinner with the array data, an adapter is used:
-        var whiskyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, whiskiesArray)
-        var clAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, amountOfClArray)
+        var whiskyAdapter = ArrayAdapter(this, R.layout.spinner_item, whiskiesArray)
+        var clAdapter = ArrayAdapter(this, R.layout.spinner_item, amountOfClArray)
+        var artistAdapter = ArrayAdapter(this, R.layout.spinner_item, artistsArray)
         //Following code is to make the spinner a drop-down menu
         whiskyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         clAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        artistAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         //Connect the Spinner instance to the adapter
         spinnerWhisky.adapter = whiskyAdapter
         spinnerCl.adapter = clAdapter
+        spinnerArtist.adapter = artistAdapter
 
-        //Following defines what happens when an item from the whisky array is selected
+
+        //Following defines what happens when an item from the spinner/arrays are selected
         spinnerWhisky.onItemSelectedListener = object  : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //Do nothing
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // TODO: If whiskey is selected and also cl and then you choose select whiskey -> reset cl spinner 
                 var selectedIndex = spinnerWhisky.getSelectedItemPosition() //get index position from array and store in var selectedIndex
                 if (selectedIndex > 0) {
                     selectedWhisky = whiskiesArray[selectedIndex]
@@ -52,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                     if (selectedCl != "")
                         resetSpinner() //reset cl spinner in case you already choose a whiskey and want another
                 }
-
                 else {
                     selectedWhisky = ""
                     selectedPrice = ""
@@ -65,7 +73,6 @@ class MainActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //Do nothing
             }
-
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 var selectedIndex = spinnerCl.getSelectedItemPosition()
                 if (selectedIndex > 0) {
@@ -79,8 +86,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        spinnerArtist.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //do nothing
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                var selectedIndex = spinnerArtist.getSelectedItemPosition()
+                if (selectedIndex > 0){
+                    selectedArtist = artistsArray[selectedIndex]
+                }
+                else
+                    selectedArtist = ""
+                printArtist(artistText)
+            }
+        }
+
     }
-        private fun printWhisky(updateText: TextView) {
+
+    private fun printArtist(updateText: TextView) {
+        if (selectedArtist != "")
+            updateText.text = selectedArtist // TODO: välj annan text 
+        else
+            updateText.text = ""
+    }
+
+    private fun printWhisky(updateText: TextView) {
         totalSum = pricePerCl * nrOfCl
         if (selectedWhisky != "")
             updateText.text = getString(R.string.your_choice_is) +selectedWhisky +getString(R.string.cl_price) + selectedPrice+" kr/cl"
@@ -89,24 +119,19 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun printCl(updateText: TextView?) {
+    private fun printCl(updateText: TextView) {
         totalSum = pricePerCl * nrOfCl
         if (selectedCl != "") {
-            if (updateText != null) {
-                if (selectedWhisky == ""){
-                    Toast.makeText(this@MainActivity, "Choose whisky first!", Toast.LENGTH_SHORT).show()
-                    resetSpinner()}
-                else
-                    updateText.text = getString(R.string.your_choice_is) + selectedCl + "\n" + getString(R.string.tot_sum) + totalSum + " kr"
-            }
+            if (selectedWhisky == ""){
+                Toast.makeText(this@MainActivity, "Choose whisky first!", Toast.LENGTH_SHORT).show()
+                resetSpinner()}
+            else
+                updateText.text = getString(R.string.your_choice_is) + selectedCl + "\n" + getString(R.string.tot_sum) + totalSum + " kr"
         }
         else
-            if (updateText != null) {
-                updateText.text = ""
-            }
+            updateText.text = ""
+
     }
-
-
 
     private fun resetSpinner(){
         val spinnerCl: Spinner = findViewById(R.id.spinner_cl)
