@@ -1,5 +1,6 @@
 package com.jogogojco.inlupp2
 
+import android.content.res.TypedArray
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -14,6 +15,8 @@ class MainActivity : AppCompatActivity() {
     var pricePerCl = 0
     var nrOfCl = 0
     var totalSum = 0
+    //var artistImage: ImageView = findViewById(R.id.image_artist)
+    //var artistImage:ImageView = findViewById(R.id.image_artist)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         val whiskyPriceArray = resources.getStringArray(R.array.whiskies_cl_price)
         val amountOfClArray = resources.getStringArray(R.array.cl_option)
         val artistsArray = resources.getStringArray(R.array.artists)
+        val artistsImageArray = resources.obtainTypedArray(R.array.artist_pics)
         //create variable to hold the textViews
         var whiskyAndPriceText = findViewById<TextView>(R.id.text_choose_whisky)
         var clChoiceText = findViewById<TextView>(R.id.text_cl)
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         spinnerArtist.adapter = artistAdapter
 
 
+
         //Following defines what happens when an item from the spinner/arrays are selected
         spinnerWhisky.onItemSelectedListener = object  : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -60,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                     pricePerCl = selectedPrice.toInt() //convert selected price to int for calculations
                     if (selectedCl != "")
                         resetSpinner() //reset cl spinner in case you already choose a whiskey and want another
+                    setWhiskyImage(selectedIndex)
                 }
                 else {
                     selectedWhisky = ""
@@ -94,6 +100,8 @@ class MainActivity : AppCompatActivity() {
                 var selectedIndex = spinnerArtist.getSelectedItemPosition()
                 if (selectedIndex > 0){
                     selectedArtist = artistsArray[selectedIndex]
+                    setArtistImage(selectedIndex)
+
                 }
                 else
                     selectedArtist = ""
@@ -103,6 +111,31 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun setWhiskyImage(selectedWhisky:Int){
+        var whiskyImage: ImageView = findViewById(R.id.image_whisky)
+        when(selectedWhisky){
+            // TODO: when 0 set mock pic
+            0 -> whiskyImage.setImageResource(R.drawable.whisky1)
+            1 -> whiskyImage.setImageResource(R.drawable.lagavulin)
+            2 -> whiskyImage.setImageResource(R.drawable.oban)
+            3 -> whiskyImage.setImageResource(R.drawable.talisker)
+            4 -> whiskyImage.setImageResource(R.drawable.ardbeg)
+            5 -> whiskyImage.setImageResource(R.drawable.glenlivet)
+            6 -> whiskyImage.setImageResource(R.drawable.bunnahabhain)
+            7 -> whiskyImage.setImageResource(R.drawable.laphroaig)
+            8 -> whiskyImage.setImageResource(R.drawable.coal)
+            9 -> whiskyImage.setImageResource(R.drawable.auchentoshan)
+        }
+
+    }
+    private fun setArtistImage(selectedArtist:Int){
+        var artistImage: ImageView = findViewById(R.id.image_artist)
+        when(selectedArtist){
+            0 -> artistImage.setImageResource(R.drawable.whisky1)
+            1 -> artistImage.setImageResource(R.drawable.abba)
+            2 -> artistImage.setImageResource(R.drawable.radiohead)
+        }
+    }
     private fun printArtist(updateText: TextView) {
         if (selectedArtist != "")
             updateText.text = selectedArtist // TODO: välj annan text 
